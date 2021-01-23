@@ -1,7 +1,16 @@
 ﻿@page "/"
+@inject NavigationManager UriHelper;
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="container">
+    <h1>Tic Tac Toe</h1>
+    <h2>Select Game Mode!</h2>
+    <div class="flex-column">
+        <button class="btn btn-primary btn-grad mt-5" @onclick="@(e => UriHelper.NavigateTo("single-player/local"))">
+            Single Player (local)
+        </button>
+        <button class="btn btn-primary btn-grad mt-4" @onclick="@(e => UriHelper.NavigateTo("single-player"))">
+            Single Player (vs AI)
+        </button>
+        <button class="btn btn-primary btn-grad mt-4">Multiplayer</button>
+    </div>
+</div>
