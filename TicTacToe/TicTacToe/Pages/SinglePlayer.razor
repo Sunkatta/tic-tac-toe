@@ -1,0 +1,13 @@
+﻿@page "/single-player/{local?}"
+
+<h3>SinglePlayer @Local</h3>
+
+@code {
+    [Parameter]
+    public string Local { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Local = Local ?? "AI";
+    }
+}
