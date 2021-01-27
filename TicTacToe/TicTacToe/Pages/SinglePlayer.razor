@@ -11,8 +11,8 @@
         {
             int index = i;
             <div class="box">
-                <button class="tile @(tiles[i].ToString().ToLower())" @onclick="@(e => ClickTile(index))">
-                    @(tiles[i] == Data.Enums.BoardCell.EMPTY ? null : tiles[i])
+                <button class="tile @(Tiles[i].ToString().ToLower())" @onclick="@(e => ClickTile(index))">
+                    @(Tiles[i] == Data.Enums.BoardCell.EMPTY ? null : Tiles[i])
                 </button>
             </div>
         }
