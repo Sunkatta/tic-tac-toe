@@ -22,5 +22,7 @@ namespace TicTacToe.Data.Game.Managers
 
         void PerformMove(BoardCell playerCell, int index);
 
+        bool ValidMove(int index);
+
     }
 }

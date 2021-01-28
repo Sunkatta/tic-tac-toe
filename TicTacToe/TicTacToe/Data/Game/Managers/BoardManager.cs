@@ -132,6 +132,7 @@ namespace TicTacToe.Data.Game.Managers
         public BoardCell[] NewGame()
         {
             boardCells = new BoardCell[dimensions * dimensions];
+            Winner = BoardCell.EMPTY;
             return boardCells;
         }
 
@@ -152,6 +153,11 @@ namespace TicTacToe.Data.Game.Managers
                 boardCells[index] = playerCell;
                 IsWinner(playerCell);
             }
+        }
+
+        public bool ValidMove(int index)
+        {
+            throw new NotImplementedException();
         }
     }
 }

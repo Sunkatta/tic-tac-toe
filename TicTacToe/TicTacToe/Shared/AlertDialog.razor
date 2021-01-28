@@ -1,0 +1,55 @@
+﻿
+@if (showModal)
+{
+    <div class="modal fade show" id="myModal" style="display:block; top: 15%;" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">@Title</h4>
+                    <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <p>@((MarkupString)Content)</p>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" @onclick=@ModalOk>Ok</button>
+                    <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter]
+    public Action OnOkClicked { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Content { get; set; }
+
+    bool showModal = false;
+
+    void ModalShow() => showModal = true;
+    void ModalCancel() => showModal = false;
+
+    void ModalOk()
+    {
+        OnOkClicked?.Invoke();
+        showModal = false;
+    }
+
+    protected override void OnInitialized()
+    {
+        showModal = true;
+    }
+}

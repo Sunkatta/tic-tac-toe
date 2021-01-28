@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Text;
 using TicTacToe.Data.Enums;
 using TicTacToe.Data.Game;
 using TicTacToe.Data.Game.Managers;
@@ -15,7 +16,10 @@ namespace TicTacToe.Components
 
         public BoardCell[] Tiles { get; set; }
         public BoardCell playerTurn = BoardCell.X;
-        private bool isFinished = false;
+        public bool isFinished = false;
+
+        public string EndGameTitle { get; set; }
+        public string EndGameMessage { get; set; }
 
         protected override void OnInitialized()
         {
@@ -35,12 +39,22 @@ namespace TicTacToe.Components
 
         protected void ClickTile(int index)
         {
-            if (!isFinished)
+            if (!isFinished && BoardManager.ValidMove(index))
             {
                 bool isX = playerTurn == BoardCell.X;
                 BoardManager.PerformMove(isX ? BoardCell.X : BoardCell.O, index);
                 playerTurn = isX ? BoardCell.O : BoardCell.X;
-                isFinished = BoardManager.HasWinner();
+                isFinished = BoardManager.IsFinished();
+            }
+            
+            if (isFinished)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(BoardManager.Winner == BoardCell.EMPTY ? "No one won this round!" : $"Player {BoardManager.Winner} Wins!");
+                sb.Append("<br>");
+                sb.Append("Do you want to play again?");
+                EndGameMessage = sb.ToString();
+                EndGameTitle = "The Game Has Finished!";
             }
         }
 
@@ -48,6 +62,8 @@ namespace TicTacToe.Components
         public void PlayAgain()
         {
             Tiles = BoardManager.NewGame();
+            isFinished = false;
+            StateHasChanged();
         }
     }
 }

@@ -1,6 +1,11 @@
 ﻿@page "/single-player/{local?}"
 @inherits BoardComponent;
 
+@if (isFinished)
+{
+    <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
+}
+
 <div class="game-board-container">
     <h3>Single Player @Local</h3>
 
