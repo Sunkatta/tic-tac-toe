@@ -1,26 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TicTacToe.Data.Enums;
 
-namespace TicTacToe.Data.Game
+namespace TicTacToe.Data.Game.Managers
 {
-    public class GameManager : IGameManager
+    public class BoardManager : IBoardManager
     {
-        //TBD maybe add multiple dimensions
         private const int DIMENSIONS = 3;
 
         private BoardCell[] boardCells;
-
-        public GameContext GameContext { get; private set; }
+        private int dimensions;
 
         public BoardCell Winner { get; private set; }
 
-        //TODO  Rename to BoardManager, create GameManger which consists of BoardManager and player (ai or real person)
 
-
-        public GameManager(GameContext context)
+        public BoardManager()
         {
-            GameContext = context;
+            dimensions = DIMENSIONS;
+        }
+
+        public BoardManager(int dimensions)
+        {
+            this.dimensions = dimensions;
         }
 
         public bool HasWinner()
@@ -61,10 +63,10 @@ namespace TicTacToe.Data.Game
         private bool CheckRows(BoardCell cell)
         {
             List<BoardCell> cells = new List<BoardCell>();
-            for (int i = 0; i < DIMENSIONS; i++)
+            for (int i = 0; i < dimensions; i++)
             {
-                int startRow = i * DIMENSIONS;
-                for (int j = 0; j < DIMENSIONS; j++)
+                int startRow = i * dimensions;
+                for (int j = 0; j < dimensions; j++)
                 {
                     cells.Add(boardCells[startRow + j]);
                 }
@@ -81,11 +83,11 @@ namespace TicTacToe.Data.Game
         private bool CheckColumns(BoardCell cell)
         {
             List<BoardCell> cells = new List<BoardCell>();
-            for (int i = 0; i < DIMENSIONS; i++)
+            for (int i = 0; i < dimensions; i++)
             {
-                for (int j = 0; j < DIMENSIONS; j++)
+                for (int j = 0; j < dimensions; j++)
                 {
-                    cells.Add(boardCells[i + DIMENSIONS * j]);
+                    cells.Add(boardCells[i + dimensions * j]);
                 }
 
                 if (cells.All(x => x == cell))
@@ -105,9 +107,9 @@ namespace TicTacToe.Data.Game
         private bool CheckLeftDiagonal(BoardCell cell)
         {
             IList<BoardCell> cells = new List<BoardCell>();
-            for (int i = 0; i < DIMENSIONS; i++)
+            for (int i = 0; i < dimensions; i++)
             {
-                cells.Add(GetAllBoardCells()[(DIMENSIONS + 1) * i]);
+                cells.Add(GetAllBoardCells()[(dimensions + 1) * i]);
             }
             return cells.All(x => x == cell);
         }
@@ -115,9 +117,9 @@ namespace TicTacToe.Data.Game
         private bool CheckRightDiagonal(BoardCell cell)
         {
             IList<BoardCell> cells = new List<BoardCell>();
-            for (int i = 1; i <= DIMENSIONS; i++)
+            for (int i = 1; i <= dimensions; i++)
             {
-                cells.Add(GetAllBoardCells()[(DIMENSIONS - 1) * i]);
+                cells.Add(GetAllBoardCells()[(dimensions - 1) * i]);
             }
             return cells.All(x => x == cell);
         }
@@ -129,8 +131,27 @@ namespace TicTacToe.Data.Game
 
         public BoardCell[] NewGame()
         {
-            boardCells = new BoardCell[DIMENSIONS * DIMENSIONS];
+            boardCells = new BoardCell[dimensions * dimensions];
             return boardCells;
+        }
+
+        public void PerformMove(BoardCell playerCell, int index)
+        {
+            if (playerCell == BoardCell.EMPTY)
+            {
+                throw new ArgumentException();
+            }
+
+            if (index < 0 || index >= dimensions * dimensions)
+            {
+                throw new ArgumentException();
+            }
+
+            if (boardCells[index] == BoardCell.EMPTY && !HasWinner())
+            {
+                boardCells[index] = playerCell;
+                IsWinner(playerCell);
+            }
         }
     }
 }

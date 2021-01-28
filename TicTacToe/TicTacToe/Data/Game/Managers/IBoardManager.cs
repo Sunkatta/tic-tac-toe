@@ -1,8 +1,8 @@
 ﻿using TicTacToe.Data.Enums;
 
-namespace TicTacToe.Data.Game
+namespace TicTacToe.Data.Game.Managers
 {
-    public interface IGameManager
+    public interface IBoardManager
     {
         bool HasWinner();
 
@@ -20,6 +20,7 @@ namespace TicTacToe.Data.Game
 
         bool IsWinner(BoardCell cell);
 
+        void PerformMove(BoardCell playerCell, int index);
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TicTacToe.Data.Enums;
 using TicTacToe.Data.Game;
+using TicTacToe.Data.Game.Managers;
 
 namespace TicTacToe.Components
 {
@@ -10,7 +11,7 @@ namespace TicTacToe.Components
         public string Local { get; set; }
 
         public GameContext Context { get; set; }
-        public IGameManager GameManager { get; set; }
+        public IBoardManager BoardManager { get; set; }
 
         public BoardCell[] Tiles { get; set; }
         public BoardCell playerTurn = BoardCell.X;
@@ -27,27 +28,26 @@ namespace TicTacToe.Components
 
             Context = builder.Build();
 
-            GameManager = new GameManager(Context);
-            Tiles = GameManager.NewGame();
+            BoardManager = new BoardManager();
+            Tiles = BoardManager.NewGame();
 
         }
 
         protected void ClickTile(int index)
         {
-            if (Tiles[index] == BoardCell.EMPTY && !isFinished)
+            if (!isFinished)
             {
                 bool isX = playerTurn == BoardCell.X;
-                Tiles[index] = isX ? BoardCell.X : BoardCell.O;
-
-                isFinished = GameManager.IsWinner(playerTurn);
+                BoardManager.PerformMove(isX ? BoardCell.X : BoardCell.O, index);
                 playerTurn = isX ? BoardCell.O : BoardCell.X;
+                isFinished = BoardManager.HasWinner();
             }
         }
 
 
         public void PlayAgain()
         {
-            Tiles = GameManager.NewGame();
+            Tiles = BoardManager.NewGame();
         }
     }
 }
