@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TicTacToe.Data.Enums;
+using TicTacToe.Data.Game.Managers.Handlers;
 using TicTacToe.Data.Game.Players;
 
 namespace TicTacToe.Data.Game.Managers
@@ -22,43 +24,45 @@ namespace TicTacToe.Data.Game.Managers
 
         public bool IsGameFinished => boardManager.IsFinished();
 
+        private readonly IHandler handler;
+
+        //TODO: needs refactoring
         public GameManager(GameContext context)
         {
-            PlayerTurn = BoardCell.X;
             boardManager = new BoardManager();
             this.context = context;
+            PlayerTurn = BoardCell.X;
             players[BoardCell.X] = new Player(BoardCell.X, boardManager);
-            players[BoardCell.O] = CreateOpponent(this.context);
+            switch (context.Mode)
+            {
+                case GameMode.SP_AI:
+                    handler = new AIHandler(players, () => UpdatePlayerTurn());
+                    players[BoardCell.O] = new AIPlayer(BoardCell.O, boardManager, context.Difficulty);
+                    break;
+                default://TODO: needs to be revised when multiplayer is introduced
+                    handler = new DefaultHandler(players);
+                    players[BoardCell.O] = new Player(BoardCell.O, boardManager);
+                    break;
+            }
         }
 
         public void ExecuteMove(int index)
         {
-            //TODO: Needs to be fixed because currently it is not possible to have the AI player go first
             if (players[PlayerTurn].PerformMove(index))
             {
                 UpdatePlayerTurn();
-                if (context.Mode == GameMode.SP_AI)
-                {
-                    ((AIPlayer)players[PlayerTurn]).PerformMove();
-                    UpdatePlayerTurn();
-                }
-            }
-        }
-
-        private IPlayer CreateOpponent(GameContext context)
-        {
-            switch (context.Mode)
-            {
-                case GameMode.SP_AI:
-                    return new AIPlayer(BoardCell.O, boardManager, context.Difficulty);
-                default:
-                    return new Player(BoardCell.O, boardManager);
+                handler.PrepareGameBoard();
             }
         }
 
         public BoardCell[] NewGame()
         {
-            return boardManager.NewBoard();
+            BoardCell[] newBoard = boardManager.NewBoard();
+            if (PlayerTurn == BoardCell.O)
+            {
+                handler.PrepareGameBoard();
+            }
+            return newBoard;
         }
 
         private void UpdatePlayerTurn()

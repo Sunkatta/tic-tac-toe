@@ -6,7 +6,7 @@ namespace TicTacToe.Data.Game.Players
 {
     public class AIPlayer : Player
     {
-        private IAIStrategy aiStrategy;
+        private readonly IAIStrategy aiStrategy;
         public AIPlayer(BoardCell aiCell, IBoardManager boardManager, AIDifficulty difficulty) : base(aiCell, boardManager)
         {
             aiStrategy = AIStrategyProvider.Provide(aiCell, boardManager, difficulty);
