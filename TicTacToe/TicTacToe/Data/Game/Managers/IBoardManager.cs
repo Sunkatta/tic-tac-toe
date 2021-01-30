@@ -1,4 +1,5 @@
-﻿using TicTacToe.Data.Enums;
+﻿using System.Collections.Generic;
+using TicTacToe.Data.Enums;
 
 namespace TicTacToe.Data.Game.Managers
 {
@@ -11,18 +12,15 @@ namespace TicTacToe.Data.Game.Managers
         BoardCell Winner { get; }
 
 
-        BoardCell[] GetAvailableBoardCells();
+        IList<int> GetEmptyBoardCellsIndexes();
 
 
         BoardCell[] GetAllBoardCells();
 
-        BoardCell[] NewGame();
+        BoardCell[] NewBoard();
 
         bool IsWinner(BoardCell cell);
 
-        void PerformMove(BoardCell playerCell, int index);
-
-        bool ValidMove(int index);
-
+        bool PerformMove(BoardCell playerCell, int index);
     }
 }

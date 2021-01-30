@@ -39,9 +39,18 @@ namespace TicTacToe.Data.Game.Managers
             return HasWinner() || IsFull();
         }
 
-        public BoardCell[] GetAvailableBoardCells()
+        public IList<int> GetEmptyBoardCellsIndexes()
         {
-            return GetAllBoardCells().ToList().Where(x => x == BoardCell.EMPTY).ToArray();
+            IList<int> indexes = new List<int>();
+            BoardCell[] boardCells = GetAllBoardCells();
+            for (int i = 0; i < boardCells.Length; i++)
+            {
+                if (boardCells[i] == BoardCell.EMPTY)
+                {
+                    indexes.Add(i);
+                }
+            }
+            return indexes;
         }
 
         public bool IsWinner(BoardCell cell)
@@ -129,35 +138,22 @@ namespace TicTacToe.Data.Game.Managers
             return boardCells;
         }
 
-        public BoardCell[] NewGame()
+        public BoardCell[] NewBoard()
         {
             boardCells = new BoardCell[dimensions * dimensions];
             Winner = BoardCell.EMPTY;
             return boardCells;
         }
 
-        public void PerformMove(BoardCell playerCell, int index)
+        public bool PerformMove(BoardCell playerCell, int index)
         {
-            if (playerCell == BoardCell.EMPTY)
-            {
-                throw new ArgumentException();
-            }
-
-            if (index < 0 || index >= dimensions * dimensions)
-            {
-                throw new ArgumentException();
-            }
-
-            if (boardCells[index] == BoardCell.EMPTY && !HasWinner())
+            if (!IsFinished() && boardCells[index] == BoardCell.EMPTY)
             {
                 boardCells[index] = playerCell;
                 IsWinner(playerCell);
+                return true;
             }
-        }
-
-        public bool ValidMove(int index)
-        {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

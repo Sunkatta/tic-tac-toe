@@ -1,7 +1,7 @@
 ﻿@page "/single-player/{local?}"
 @inherits BoardComponent;
 
-@if (isFinished)
+@if (GameManager.IsGameFinished)
 {
     <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
 }
@@ -9,7 +9,7 @@
 <div class="game-board-container">
     <h3>Single Player @Local</h3>
 
-    <h5 class="mt-5">Player @(playerTurn == Data.Enums.BoardCell.X ? "X's" : "O's") turn</h5>
+    <h5 class="mt-5">Player @(GameManager.PlayerTurn == Data.Enums.BoardCell.X ? "X's" : "O's") turn</h5>
 
     <div class="game-board">
         @for (int i = 0; i < 9; i++)

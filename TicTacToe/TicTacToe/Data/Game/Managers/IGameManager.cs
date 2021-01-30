@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
-using TicTacToe.Data.Game.Players;
+﻿using TicTacToe.Data.Enums;
 
 namespace TicTacToe.Data.Game.Managers
 {
     public interface IGameManager
     {
-        IBoardManager BoardManager { get; }
+        void ExecuteMove(int index);
 
-        public List<IPlayer> Players { get; }
+        BoardCell PlayerTurn { get; }
+
+        BoardCell Winner { get; }
+
+        BoardCell[] NewGame();
+
+        bool IsGameFinished { get; }
 
     }
 }

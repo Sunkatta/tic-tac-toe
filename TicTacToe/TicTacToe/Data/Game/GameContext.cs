@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using TicTacToe.Data.Enums;
-using TicTacToe.Data.Game.Players;
 using TicTacToe.Data.Utils;
 
 namespace TicTacToe.Data.Game
@@ -12,8 +10,6 @@ namespace TicTacToe.Data.Game
         public GameMode Mode { get; private set; }
 
         public AIDifficulty Difficulty { get; private set; }
-
-        public IList<IPlayer> Players { get; private set; }
 
         public int Dimensions { get; private set; }
 
@@ -28,8 +24,6 @@ namespace TicTacToe.Data.Game
 
             private AIDifficulty Difficulty { get; set; }
 
-            public IList<IPlayer> Players { get; private set; }
-
             public int Dimensions { get; private set; }
 
             public Builder(GameMode mode)
@@ -42,8 +36,7 @@ namespace TicTacToe.Data.Game
                 return new GameContext()
                 {
                     Mode = Mode,
-                    Difficulty = Difficulty,
-                    Players = new List<IPlayer>()
+                    Difficulty = Difficulty
                 };
             }
 
@@ -57,15 +50,6 @@ namespace TicTacToe.Data.Game
                 return this;
             }
 
-            public Builder AddPlayer(IPlayer player)
-            {
-                if (Players.Count > 2)
-                {
-                    throw new InvalidOperationException();
-                }
-                Players.Add(player);
-                return this;
-            }
 
             public Builder WithDimensions(int dimensions)
             {

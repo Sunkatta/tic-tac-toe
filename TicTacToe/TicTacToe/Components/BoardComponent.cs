@@ -11,12 +11,9 @@ namespace TicTacToe.Components
         [Parameter]
         public string Local { get; set; }
 
-        public GameContext Context { get; set; }
-        public IBoardManager BoardManager { get; set; }
+        public IGameManager GameManager { get; set; }
 
         public BoardCell[] Tiles { get; set; }
-        public BoardCell playerTurn = BoardCell.X;
-        public bool isFinished = false;
 
         public string EndGameTitle { get; set; }
         public string EndGameMessage { get; set; }
@@ -24,33 +21,29 @@ namespace TicTacToe.Components
         protected override void OnInitialized()
         {
             GameMode mode = string.IsNullOrEmpty(Local) ? GameMode.SP_AI : GameMode.SP_LOCAL;
-            GameContext.Builder builder = new GameContext.Builder(mode);
+            GameContext.Builder contextBuilder = new GameContext.Builder(mode);
             if (mode == GameMode.SP_AI)
             {
-                builder.WithDifficulty(AIDifficulty.EASY);
+                //for testing purposes
+                contextBuilder.WithDifficulty(AIDifficulty.EASY);
             }
 
-            Context = builder.Build();
-
-            BoardManager = new BoardManager();
-            Tiles = BoardManager.NewGame();
+            GameManager = new GameManager(contextBuilder.Build());
+            Tiles = GameManager.NewGame();
 
         }
 
         protected void ClickTile(int index)
         {
-            if (!isFinished && BoardManager.ValidMove(index))
+            if (!GameManager.IsGameFinished)
             {
-                bool isX = playerTurn == BoardCell.X;
-                BoardManager.PerformMove(isX ? BoardCell.X : BoardCell.O, index);
-                playerTurn = isX ? BoardCell.O : BoardCell.X;
-                isFinished = BoardManager.IsFinished();
+                GameManager.ExecuteMove(index);
             }
             
-            if (isFinished)
+            if (GameManager.IsGameFinished)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(BoardManager.Winner == BoardCell.EMPTY ? "No one won this round!" : $"Player {BoardManager.Winner} Wins!");
+                sb.Append(GameManager.Winner == BoardCell.EMPTY ? "No one won this round!" : $"Player {GameManager.Winner} Wins!");
                 sb.Append("<br>");
                 sb.Append("Do you want to play again?");
                 EndGameMessage = sb.ToString();
@@ -61,8 +54,7 @@ namespace TicTacToe.Components
 
         public void PlayAgain()
         {
-            Tiles = BoardManager.NewGame();
-            isFinished = false;
+            Tiles = GameManager.NewGame();
             StateHasChanged();
         }
     }

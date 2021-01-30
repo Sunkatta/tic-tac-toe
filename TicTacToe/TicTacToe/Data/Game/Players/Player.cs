@@ -5,10 +5,10 @@ using TicTacToe.Data.Utils;
 
 namespace TicTacToe.Data.Game.Players
 {
-    public class BasePlayer : IPlayer
+    public class Player : IPlayer
     {
         private BoardCell playerCell;
-        private BoardManager boardManager;
+        private IBoardManager boardManager;
 
         public BoardCell PlayerCell
         {
@@ -16,7 +16,7 @@ namespace TicTacToe.Data.Game.Players
             {
                 return playerCell;
             }
-            set
+            private set
             {
                 if (value == BoardCell.EMPTY)
                 {
@@ -26,14 +26,13 @@ namespace TicTacToe.Data.Game.Players
             }
         }
 
-        //TODO: Add some validation
-        protected BoardManager BoardManager
+        protected IBoardManager BoardManager
         {
             get
             {
                 return boardManager;
             }
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -43,18 +42,16 @@ namespace TicTacToe.Data.Game.Players
             }
         }
 
-        BoardManager IPlayer.BoardManager { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public BasePlayer(BoardManager boardManager, BoardCell playerCell)
+        public Player(BoardCell playerCell, IBoardManager boardManager)
         {
             BoardManager = boardManager;
             PlayerCell = playerCell;
         }
 
 
-        public void PerformMove(int index)
+        public bool PerformMove(int index)
         {
-            boardManager.PerformMove(PlayerCell, index);
+            return boardManager.PerformMove(PlayerCell, index);
         }
     }
 }
