@@ -1,25 +1,43 @@
 ﻿@page "/single-player/{local?}"
 @inherits BoardComponent;
 
-@if (GameManager.IsGameFinished)
-{
-    <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
-}
+
 
 <div class="game-board-container">
-    <h3>Single Player @Local</h3>
+    <h1>Single Player @Local</h1>
 
-    <h5 class="mt-5">Player @(GameManager.PlayerTurn == Data.Enums.BoardCell.X ? "X's" : "O's") turn</h5>
-
-    <div class="game-board">
-        @for (int i = 0; i < 9; i++)
-        {
-            int index = i;
-            <div class="box">
-                <button class="tile @(Tiles[i].ToString().ToLower())" @onclick="@(e => ClickTile(index))">
-                    @(Tiles[i] == Data.Enums.BoardCell.EMPTY ? null : Tiles[i])
+    @if (Local == null && !isDificultyPicked)
+    {
+        <h2 class="mt-5 mb-5">Choose Difficulty!</h2>
+        <div class="flex-column">
+            @foreach (Data.Enums.AIDifficulty difficulty in Enum.GetValues(typeof(Data.Enums.AIDifficulty)))
+            {
+                <button class="btn btn-primary btn-grad mt-4" @onclick="@(e => ChooseDifficulty(difficulty))">
+                    @difficulty.ToString()
                 </button>
-            </div>
+            }
+        </div>
+    }
+
+    @if (isDificultyPicked)
+    {
+        @if (GameManager.IsGameFinished)
+        {
+            <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
         }
-    </div>
+
+        <h5 class="mt-5">Player @(GameManager.PlayerTurn == Data.Enums.BoardCell.X ? "X's" : "O's") turn</h5>
+
+        <div class="game-board">
+            @for (int i = 0; i < 9; i++)
+            {
+                int index = i;
+                <div class="box">
+                    <button class="tile @(Tiles[i].ToString().ToLower())" @onclick="@(e => ClickTile(index))">
+                        @(Tiles[i] == Data.Enums.BoardCell.EMPTY ? null : Tiles[i])
+                    </button>
+                </div>
+            }
+        </div>
+    }
 </div>
