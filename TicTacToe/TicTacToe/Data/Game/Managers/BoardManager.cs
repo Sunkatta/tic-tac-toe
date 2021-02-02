@@ -10,19 +10,19 @@ namespace TicTacToe.Data.Game.Managers
         private const int DIMENSIONS = 3;
 
         private BoardCell[] boardCells;
-        private int dimensions;
 
         public BoardCell Winner { get; private set; }
 
+        public int Dimensions { get; private set; }
 
         public BoardManager()
         {
-            dimensions = DIMENSIONS;
+            Dimensions = DIMENSIONS;
         }
 
         public BoardManager(int dimensions)
         {
-            this.dimensions = dimensions;
+            Dimensions = dimensions;
         }
 
         public bool HasWinner()
@@ -72,10 +72,10 @@ namespace TicTacToe.Data.Game.Managers
         private bool CheckRows(BoardCell cell)
         {
             List<BoardCell> cells = new List<BoardCell>();
-            for (int i = 0; i < dimensions; i++)
+            for (int i = 0; i < Dimensions; i++)
             {
-                int startRow = i * dimensions;
-                for (int j = 0; j < dimensions; j++)
+                int startRow = i * Dimensions;
+                for (int j = 0; j < Dimensions; j++)
                 {
                     cells.Add(boardCells[startRow + j]);
                 }
@@ -92,11 +92,11 @@ namespace TicTacToe.Data.Game.Managers
         private bool CheckColumns(BoardCell cell)
         {
             List<BoardCell> cells = new List<BoardCell>();
-            for (int i = 0; i < dimensions; i++)
+            for (int i = 0; i < Dimensions; i++)
             {
-                for (int j = 0; j < dimensions; j++)
+                for (int j = 0; j < Dimensions; j++)
                 {
-                    cells.Add(boardCells[i + dimensions * j]);
+                    cells.Add(boardCells[i + Dimensions * j]);
                 }
 
                 if (cells.All(x => x == cell))
@@ -116,9 +116,9 @@ namespace TicTacToe.Data.Game.Managers
         private bool CheckLeftDiagonal(BoardCell cell)
         {
             IList<BoardCell> cells = new List<BoardCell>();
-            for (int i = 0; i < dimensions; i++)
+            for (int i = 0; i < Dimensions; i++)
             {
-                cells.Add(GetAllBoardCells()[(dimensions + 1) * i]);
+                cells.Add(GetAllBoardCells()[(Dimensions + 1) * i]);
             }
             return cells.All(x => x == cell);
         }
@@ -126,9 +126,9 @@ namespace TicTacToe.Data.Game.Managers
         private bool CheckRightDiagonal(BoardCell cell)
         {
             IList<BoardCell> cells = new List<BoardCell>();
-            for (int i = 1; i <= dimensions; i++)
+            for (int i = 1; i <= Dimensions; i++)
             {
-                cells.Add(GetAllBoardCells()[(dimensions - 1) * i]);
+                cells.Add(GetAllBoardCells()[(Dimensions - 1) * i]);
             }
             return cells.All(x => x == cell);
         }
@@ -140,7 +140,7 @@ namespace TicTacToe.Data.Game.Managers
 
         public BoardCell[] NewBoard()
         {
-            boardCells = new BoardCell[dimensions * dimensions];
+            boardCells = new BoardCell[Dimensions * Dimensions];
             Winner = BoardCell.EMPTY;
             return boardCells;
         }

@@ -25,13 +25,26 @@ namespace TicTacToe.Components
 
         public GameMode mode;
 
+        private GameContext.Builder contextBuilder;
+
         protected override void OnInitialized()
         {
             mode = string.IsNullOrEmpty(Local) ? GameMode.SP_AI : GameMode.SP_LOCAL;
 
+            contextBuilder = new GameContext.Builder(mode);
             if (mode == GameMode.SP_LOCAL)
             {
-                GameContext.Builder contextBuilder = new GameContext.Builder(mode);
+                GameManager = new GameManager(contextBuilder.Build());
+                Tiles = GameManager.NewGame();
+                isDificultyPicked = true;
+            }
+        }
+
+        protected void ChooseDifficulty(AIDifficulty difficulty)
+        {
+            if (contextBuilder != null)
+            {
+                contextBuilder.WithDifficulty(difficulty);
                 GameManager = new GameManager(contextBuilder.Build());
                 Tiles = GameManager.NewGame();
                 isDificultyPicked = true;
@@ -54,15 +67,6 @@ namespace TicTacToe.Components
                 EndGameMessage = sb.ToString();
                 EndGameTitle = "The Game Has Finished!";
             }
-        }
-
-        protected void ChooseDifficulty(AIDifficulty difficulty)
-        {
-            GameContext.Builder contextBuilder = new GameContext.Builder(mode);
-            contextBuilder.WithDifficulty(difficulty);
-            GameManager = new GameManager(contextBuilder.Build());
-            Tiles = GameManager.NewGame();
-            isDificultyPicked = true;
         }
 
         protected void PlayAgain()

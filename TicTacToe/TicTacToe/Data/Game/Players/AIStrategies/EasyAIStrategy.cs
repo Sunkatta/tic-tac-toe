@@ -1,5 +1,4 @@
-﻿using System;
-using TicTacToe.Data.Enums;
+﻿using TicTacToe.Data.Enums;
 using TicTacToe.Data.Game.Managers;
 
 namespace TicTacToe.Data.Game.Players.AIStrategies

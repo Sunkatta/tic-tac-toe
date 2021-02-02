@@ -22,5 +22,7 @@ namespace TicTacToe.Data.Game.Managers
         bool IsWinner(BoardCell cell);
 
         bool PerformMove(BoardCell playerCell, int index);
+
+        int Dimensions { get; }
     }
 }
