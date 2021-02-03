@@ -53,6 +53,7 @@ namespace TicTacToe
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapHub<MultiplayerHub>(MultiplayerHub.HubUrl);
             });
         }
     }
