@@ -48,3 +48,38 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+h1, h2, h5 {
+    color: white;
+    text-align: center;
+}
+
+.flex-column {
+    display: flex;
+    align-items: center;
+}
+
+.btn {
+    font-size: 1.5rem;
+    width: 22%;
+}
+
+
+.btn-grad {
+    background-image: linear-gradient(to right, #FF512F 0%, #F09819 51%, #FF512F 100%)
+}
+
+.btn-grad {
+    text-align: center;
+    transition: 0.5s;
+    background-size: 200% auto;
+    border-radius: 10px;
+    display: block;
+}
+
+    .btn-grad:hover {
+        background-position: right center; /* change the direction of the change here */
+        color: #fff;
+        text-decoration: none;
+    }

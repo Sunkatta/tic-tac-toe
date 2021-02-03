@@ -14,5 +14,7 @@ namespace TicTacToe.Data.Game.Managers
 
         bool IsGameFinished { get; }
 
+        IBoardManager BoardManager { get; }
+
     }
 }

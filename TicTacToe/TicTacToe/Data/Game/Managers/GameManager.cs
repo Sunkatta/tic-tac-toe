@@ -16,32 +16,32 @@ namespace TicTacToe.Data.Game.Managers
 
         private readonly GameContext context;
 
-        private readonly IBoardManager boardManager;
+        public IBoardManager BoardManager { get; }
 
         public BoardCell PlayerTurn { get; private set; }
 
-        public BoardCell Winner => boardManager.Winner;
+        public BoardCell Winner => BoardManager.Winner;
 
-        public bool IsGameFinished => boardManager.IsFinished();
+        public bool IsGameFinished => BoardManager.IsFinished();
 
         private readonly IHandler handler;
 
         //TODO: needs refactoring
         public GameManager(GameContext context)
         {
-            boardManager = new BoardManager();
+            BoardManager = new BoardManager();
             this.context = context;
             PlayerTurn = BoardCell.X;
-            players[BoardCell.X] = new Player(BoardCell.X, boardManager);
+            players[BoardCell.X] = new Player(BoardCell.X, BoardManager);
             switch (context.Mode)
             {
                 case GameMode.SP_AI:
                     handler = new AIHandler(players, () => UpdatePlayerTurn());
-                    players[BoardCell.O] = new AIPlayer(BoardCell.O, boardManager, context.Difficulty);
+                    players[BoardCell.O] = new AIPlayer(BoardCell.O, BoardManager, context.Difficulty);
                     break;
                 default://TODO: needs to be revised when multiplayer is introduced
                     handler = new DefaultHandler(players);
-                    players[BoardCell.O] = new Player(BoardCell.O, boardManager);
+                    players[BoardCell.O] = new Player(BoardCell.O, BoardManager);
                     break;
             }
         }
@@ -57,7 +57,7 @@ namespace TicTacToe.Data.Game.Managers
 
         public BoardCell[] NewGame()
         {
-            BoardCell[] newBoard = boardManager.NewBoard();
+            BoardCell[] newBoard = BoardManager.NewBoard();
             if (PlayerTurn == BoardCell.O)
             {
                 handler.PrepareGameBoard();

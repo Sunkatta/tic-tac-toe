@@ -36,7 +36,7 @@ namespace TicTacToe.Data.Game.Managers
 
         public bool IsFinished()
         {
-            return HasWinner() || IsFull();
+            return boardCells != null && (HasWinner() || IsFull());
         }
 
         public IList<int> GetEmptyBoardCellsIndexes()
