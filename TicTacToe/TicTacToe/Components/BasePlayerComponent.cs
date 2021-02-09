@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Text;
 using TicTacToe.Data.Enums;
 using TicTacToe.Data.Game;
 using TicTacToe.Data.Game.Managers;
@@ -7,16 +8,30 @@ namespace TicTacToe.Components
 {
     public abstract class BasePlayerComponent : ComponentBase
     {
-        public IGameManager GameManager { get; set; }
+        protected IGameManager GameManager { get; set; }
 
-        public string EndGameTitle { get; set; }
+        protected string EndGameTitle { get; set; }
 
-        public string EndGameMessage { get; set; }
+        protected string EndGameMessage { get; set; }
 
-        public GameMode mode;
+        protected GameMode mode;
 
-        public GameContext.Builder contextBuilder;
+        protected GameContext.Builder contextBuilder;
 
         public abstract void PlayAgain();
+
+        public virtual void HandleTileClick()
+        {
+            if (GameManager.IsGameFinished)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(GameManager.Winner == BoardCell.EMPTY ? "No one won this round!" : $"Player {GameManager.Winner} Wins!");
+                sb.Append("<br>");
+                sb.Append("Do you want to play again?");
+                EndGameMessage = sb.ToString();
+                EndGameTitle = "The Game Has Finished!";
+                StateHasChanged();
+            }
+        }
     }
 }

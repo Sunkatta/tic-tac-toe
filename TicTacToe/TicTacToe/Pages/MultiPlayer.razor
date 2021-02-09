@@ -1,10 +1,21 @@
 ﻿@page "/multi-player"
-@inherits BoardComponent; 
+@using TicTacToe.Data.Game;
+@using TicTacToe.Data.Game.Managers;
+@using TicTacToe.Data.Enums;
+@inherits MultiPlayerComponent;
+@inject NavigationManager navigationManager
+
 
 <h3>MultiPlayer</h3>
 
-<GameBoard></GameBoard>
+<GameBoard GameManager="@GameManager" OnTileClicked="@HandleTileClick"></GameBoard>
+@code{
 
-@code {
-
+    protected override async void OnInitialized()
+    {
+        contextBuilder = new GameContext.Builder(GameMode.MP);
+        GameManager = new GameManager(contextBuilder.Build());
+        string hubUrl = navigationManager.BaseUri.TrimEnd('/') + MultiPlayerHub.HubUrl;
+        await ConnectPlayer();
+    }
 }

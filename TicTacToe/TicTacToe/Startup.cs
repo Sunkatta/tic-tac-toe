@@ -1,15 +1,8 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TicTacToe.Data;
 
 namespace TicTacToe
 {
@@ -53,7 +46,7 @@ namespace TicTacToe
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
-                endpoints.MapHub<MultiplayerHub>(MultiplayerHub.HubUrl);
+                endpoints.MapHub<MultiPlayerHub>(MultiPlayerHub.HubUrl);
             });
         }
     }

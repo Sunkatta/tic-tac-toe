@@ -39,19 +39,6 @@ namespace TicTacToe.Components
             StateHasChanged();
         }
 
-        public void HandleTileClick()
-        {
-            if (GameManager.IsGameFinished)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(GameManager.Winner == BoardCell.EMPTY ? "No one won this round!" : $"Player {GameManager.Winner} Wins!");
-                sb.Append("<br>");
-                sb.Append("Do you want to play again?");
-                EndGameMessage = sb.ToString();
-                EndGameTitle = "The Game Has Finished!";
-                StateHasChanged();
-            }
-        }
 
         private void InitializeGameManager()
         {

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using TicTacToe.Data.Enums;
 
 namespace TicTacToe
 {
-    public class MultiplayerHub : Hub
+    public class MultiPlayerHub : Hub
     {
         public const string HubUrl = "/multi-player";
 
-        public async Task Broadcast(string username, string message)
+        public async Task Broadcast(BoardCell cell, int index)
         {
-            await Clients.All.SendAsync("Broadcast", username, message);
+            await Clients.All.SendAsync("Broadcast", cell, index);
         }
 
         public override Task OnConnectedAsync()
