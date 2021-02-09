@@ -8,14 +8,18 @@
 
 <h3>MultiPlayer</h3>
 
-<GameBoard GameManager="@GameManager" OnTileClicked="@HandleTileClick"></GameBoard>
-@code{
+@if (GameManager.IsGameFinished)
+{
+    <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
+}
 
+<GameBoard GameManager="@GameManager" OnTileClicked="@((i) => HandleTileClick(i))"></GameBoard>
+@code{
     protected override async void OnInitialized()
     {
         contextBuilder = new GameContext.Builder(GameMode.MP);
         GameManager = new GameManager(contextBuilder.Build());
-        string hubUrl = navigationManager.BaseUri.TrimEnd('/') + MultiPlayerHub.HubUrl;
+        hubUrl = navigationManager.BaseUri.TrimEnd('/') + MultiPlayerHub.HubUrl;
         await ConnectPlayer();
     }
 }

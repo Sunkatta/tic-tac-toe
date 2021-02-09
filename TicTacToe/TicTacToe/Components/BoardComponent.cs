@@ -11,7 +11,7 @@ namespace TicTacToe.Components
         public IGameManager GameManager { get; set; }
 
         [Parameter]
-        public Action OnTileClicked { get; set; }
+        public Action<int> OnTileClicked { get; set; }
 
         public AIDifficulty Difficulty { get; set; }
 
@@ -27,7 +27,7 @@ namespace TicTacToe.Components
                 GameManager.ExecuteMove(index);
             }
 
-            OnTileClicked.Invoke();
+            OnTileClicked.Invoke(index);
         }
     }
 }

@@ -2,8 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using TicTacToe.Data.Enums;
-using TicTacToe.Data.Game;
-using TicTacToe.Data.Game.Managers;
 
 namespace TicTacToe.Components
 {
@@ -18,12 +16,13 @@ namespace TicTacToe.Components
         private BoardCell playerCell;
 
         // on-screen message
-        private int index;
+        public int index;
 
         // new message input
         private string newMessage;
 
-        private string hubUrl;
+        public string hubUrl;
+
         private HubConnection hubConnection;
 
         public string BaseUri { get; set; }
@@ -37,14 +36,14 @@ namespace TicTacToe.Components
                     .Build();
 
                 hubConnection.On<BoardCell, int>("Broadcast", BroadcastPlayerMove);
+                hubConnection.On("OnDisconnectedAsync", DisconnectAsync);
 
                 await hubConnection.StartAsync();
-
-                //await SendAsync($"[Notice] {username} joined chat room.");
             }
             catch (Exception e)
             {
-                //message = $"ERROR: Failed to start chat client: {e.Message}";
+                await DisconnectAsync();
+                string message = $"ERROR: Failed to start chat client: {e.Message}";
             }
         }
 
@@ -52,7 +51,9 @@ namespace TicTacToe.Components
         {
             //bool isMine = name.Equals(username, StringComparison.OrdinalIgnoreCase);
 
-            // Inform blazor the UI needs updating
+            GameManager.ExecuteMove(index);
+            base.HandleTileClick(index);
+
             StateHasChanged();
         }
 
@@ -66,11 +67,9 @@ namespace TicTacToe.Components
             hubConnection = null;
         }
 
-        public override async void HandleTileClick()
+        public override async void HandleTileClick(int index)
         {
-            //TODO: handle send move to the other scrub
             await hubConnection.SendAsync("Broadcast", playerCell, index);
-            base.HandleTileClick();
         }
     }
 }

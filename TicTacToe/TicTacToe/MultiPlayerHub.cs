@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using TicTacToe.Data.Enums;
@@ -16,14 +17,28 @@ namespace TicTacToe
 
         public override Task OnConnectedAsync()
         {
-            Console.WriteLine($"{Context.ConnectionId} connected");
-            return base.OnConnectedAsync();
+            if (UserHandler.ConnectedIds.Count < 2)
+            {
+                UserHandler.ConnectedIds.Add(Context.ConnectionId);
+                return base.OnConnectedAsync();
+            }
+
+            //Clients.Client(Context.ConnectionId).SendAsync("DisconnectAsync");
+            //return Task.CompletedTask;
+            // throw new Exception("FULL");
+
+            return OnDisconnectedAsync(new Exception("FULL"));
         }
 
         public override async Task OnDisconnectedAsync(Exception e)
         {
-            Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
+            UserHandler.ConnectedIds.Remove(Context.ConnectionId);
             await base.OnDisconnectedAsync(e);
+        }
+
+        private static class UserHandler
+        {
+            public static HashSet<string> ConnectedIds = new HashSet<string>();
         }
     }
 }
