@@ -18,9 +18,6 @@ namespace TicTacToe.Components
         // on-screen message
         public int index;
 
-        // new message input
-        private string newMessage;
-
         public string hubUrl;
 
         private HubConnection hubConnection;
@@ -68,7 +65,7 @@ namespace TicTacToe.Components
 
         public async void HandleTileClick(int index)
         {
-            if (hubConnection != null && GameManager.PlayerTurn == PlayerCell)
+            if (hubConnection != null)
             {
                 await hubConnection.SendAsync("Broadcast", PlayerCell, index);
             }
