@@ -1,8 +1,12 @@
 ﻿@page "/single-player/{local?}"
 @inherits SinglePlayerComponent;
+@inject NavigationManager UriHelper;
 
 <div class="game-board-container">
     <h1>Single Player @Local</h1>
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-primary btn-grad mt-4" @onclick="@(e => UriHelper.NavigateTo("/"))">Back to home</button>
+    </div>
 
     @if (Local == null && !isDificultyPicked)
     {

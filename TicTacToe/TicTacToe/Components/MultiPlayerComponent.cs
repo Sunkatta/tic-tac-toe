@@ -3,15 +3,23 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TicTacToe.Data.Enums;
+using TicTacToe.Data.Game;
+using TicTacToe.Data.Game.Managers;
 using TicTacToe.Messages;
 
 namespace TicTacToe.Components
 {
     public class MultiPlayerComponent : BasePlayerComponent
     {
-        public override void PlayAgain()
+        public override async void PlayAgain()
         {
-            throw new NotImplementedException();
+            contextBuilder = new GameContext.Builder(GameMode.MP);
+            GameManager = new GameManager(contextBuilder.Build());
+            loaded = false;
+            CanStartGame = false;
+            PlayerCell = BoardCell.EMPTY;
+            StateHasChanged();
+            await ConnectPlayer();
         }
 
         public BoardCell PlayerCell { get; set; }
@@ -21,7 +29,10 @@ namespace TicTacToe.Components
         private HubConnection hubConnection;
 
         public string BaseUri { get; set; }
+
         public bool CanStartGame { get; set; }
+
+        public bool loaded;
 
         public async Task ConnectPlayer()
         {
@@ -45,6 +56,9 @@ namespace TicTacToe.Components
                 {
                     await hubConnection.SendAsync("Broadcast", new Message(MessageType.START_GAME, true));
                 }
+
+                loaded = true;
+                StateHasChanged();
             }
             catch (Exception e)
             {
@@ -69,7 +83,7 @@ namespace TicTacToe.Components
                     HandleGameFinish(index);
                     break;
                 case MessageType.RESTART_GAME:
-                    //TBD
+                    //TODO: Change to DISCONNECT_GAME
                     break;
                 default:
                     break;
@@ -92,6 +106,16 @@ namespace TicTacToe.Components
             {
                 PlayerMove playerMove = new PlayerMove(PlayerCell, index);
                 await hubConnection.SendAsync("Broadcast", new Message(MessageType.PLAYER_MOVE, playerMove));
+            }
+        }
+
+        public override async void HandleGameFinish(int index)
+        {
+            base.HandleGameFinish(index);
+
+            if (GameManager.IsGameFinished)
+            {
+                await DisconnectAsync();
             }
         }
     }

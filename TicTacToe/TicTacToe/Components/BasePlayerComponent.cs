@@ -20,7 +20,7 @@ namespace TicTacToe.Components
 
         public abstract void PlayAgain();
 
-        public void HandleGameFinish(int index)
+        public virtual void HandleGameFinish(int index)
         {
             if (GameManager.IsGameFinished)
             {

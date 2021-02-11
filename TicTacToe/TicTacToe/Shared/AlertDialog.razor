@@ -1,4 +1,5 @@
-﻿
+﻿@inject NavigationManager UriHelper;
+
 @if (showModal)
 {
     <div class="modal fade show" id="myModal" style="display:block; top: 15%;" aria-modal="true" role="dialog">
@@ -40,7 +41,12 @@
     bool showModal = false;
 
     void ModalShow() => showModal = true;
-    void ModalCancel() => showModal = false;
+
+    void ModalCancel()
+    {
+        showModal = false;
+        UriHelper.NavigateTo("/");
+    }
 
     void ModalOk()
     {

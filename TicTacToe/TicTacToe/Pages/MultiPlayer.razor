@@ -3,19 +3,39 @@
 @using TicTacToe.Data.Game.Managers;
 @using TicTacToe.Data.Enums;
 @inherits MultiPlayerComponent;
-@inject NavigationManager navigationManager
+@inject NavigationManager navigationManager;
+@inject NavigationManager UriHelper;
 
+<h1>Multiplayer</h1>
 
-<h3>MultiPlayer</h3>
-
-@if (GameManager.IsGameFinished)
+@if (loaded)
 {
-    <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
+    @if (PlayerCell == Data.Enums.BoardCell.EMPTY)
+    {
+        <div class="container flex-column mt-5">
+            <h3>Room is full! Try again later.</h3>
+            <button class="btn btn-primary btn-grad mt-4" @onclick="@(e => UriHelper.NavigateTo("/"))">Back to home</button>
+        </div>
+    }
+    else
+    {
+        @if (GameManager.IsGameFinished)
+        {
+            <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
+        }
+        @if (CanStartGame)
+        {
+            <GameBoard GameManager="@GameManager" OnTileClicked="@((i) => HandleTileClick(i))" PlayerCell="@PlayerCell"></GameBoard>
+        }
+        else
+        {
+            <div class="container">
+                <h2 class="mt-5">Waiting for another player...</h2>
+            </div>
+        }
+    }
 }
-@if (CanStartGame)
-{
-<GameBoard GameManager="@GameManager" OnTileClicked="@((i) => HandleTileClick(i))" PlayerCell="@PlayerCell"></GameBoard>
-}
+
 @code{
     protected override async void OnInitialized()
     {
