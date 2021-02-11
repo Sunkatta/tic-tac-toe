@@ -17,23 +17,24 @@ namespace TicTacToe
 
         public override Task OnConnectedAsync()
         {
-            if (UserHandler.ConnectedIds.Count < 2)
-            {
-                UserHandler.ConnectedIds.Add(Context.ConnectionId);
-                return base.OnConnectedAsync();
-            }
-
-            //Clients.Client(Context.ConnectionId).SendAsync("DisconnectAsync");
-            //return Task.CompletedTask;
-            // throw new Exception("FULL");
-
-            return OnDisconnectedAsync(new Exception("FULL"));
+            UserHandler.ConnectedIds.Add(Context.ConnectionId);
+            return base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception e)
         {
             UserHandler.ConnectedIds.Remove(Context.ConnectionId);
             await base.OnDisconnectedAsync(e);
+        }
+
+        public BoardCell GetPlayerCell()
+        {
+            return UserHandler.ConnectedIds.Count switch
+            {
+                1 => BoardCell.X,
+                2 => BoardCell.O,
+                _ => BoardCell.EMPTY,
+            };
         }
 
         private static class UserHandler

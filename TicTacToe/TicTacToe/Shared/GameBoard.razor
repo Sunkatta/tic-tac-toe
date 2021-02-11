@@ -1,7 +1,8 @@
 ﻿@inherits BoardComponent;
 
-@{ 
+@{
     Data.Enums.BoardCell[] cells = GameManager.BoardManager.GetAllBoardCells();
+    Action<int> clickTileAction = GameManager.Context.Mode == Data.Enums.GameMode.MP ? i => ClickTile(PlayerCell, i) : i => ClickTile(i);
 }
 
 <h5 class="mt-5">Player @(GameManager.PlayerTurn == Data.Enums.BoardCell.X ? "X's" : "O's") turn</h5>
@@ -11,7 +12,7 @@
     {
         int index = i;
         <div class="box">
-            <button class="tile @(cells[i].ToString().ToLower())" @onclick="@(e => ClickTile(index))">
+            <button class="tile @(cells[i].ToString().ToLower())" @onclick="@(e => clickTileAction.Invoke(index))">
                 @(cells[i] == Data.Enums.BoardCell.EMPTY ? null : cells[i])
             </button>
         </div>

@@ -24,6 +24,6 @@
             <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
         }
 
-        <GameBoard GameManager="@GameManager" OnTileClicked="@((i) => HandleTileClick(i))"></GameBoard>
+        <GameBoard GameManager="@GameManager" OnTileClicked="@((i) => HandleGameFinish(i))" PlayerCell="@GameManager.PlayerTurn"></GameBoard>
     }
 </div>

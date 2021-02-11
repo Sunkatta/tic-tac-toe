@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TicTacToe.Data.Enums;
 using TicTacToe.Data.Game.Managers.Handlers;
 using TicTacToe.Data.Game.Players;
@@ -14,7 +13,7 @@ namespace TicTacToe.Data.Game.Managers
             { BoardCell.O, null}
         };
 
-        private readonly GameContext context;
+        public GameContext Context { get; private set; }
 
         public IBoardManager BoardManager { get; }
 
@@ -24,26 +23,15 @@ namespace TicTacToe.Data.Game.Managers
 
         public bool IsGameFinished => BoardManager.IsFinished();
 
-        private readonly IHandler handler;
+        private IHandler handler;
 
-        //TODO: needs refactoring
         public GameManager(GameContext context)
         {
             BoardManager = new BoardManager();
-            this.context = context;
+            Context = context;
             PlayerTurn = BoardCell.X;
             players[BoardCell.X] = new Player(BoardCell.X, BoardManager);
-            switch (context.Mode)
-            {
-                case GameMode.SP_AI:
-                    handler = new AIHandler(players, () => UpdatePlayerTurn());
-                    players[BoardCell.O] = new AIPlayer(BoardCell.O, BoardManager, context.Difficulty);
-                    break;
-                default://TODO: needs to be revised when multiplayer is introduced
-                    handler = new DefaultHandler(players);
-                    players[BoardCell.O] = new Player(BoardCell.O, BoardManager);
-                    break;
-            }
+            DetermineGameMode();
         }
 
         public void ExecuteMove(int index)
@@ -51,6 +39,15 @@ namespace TicTacToe.Data.Game.Managers
             if (players[PlayerTurn].PerformMove(index))
             {
                 UpdatePlayerTurn();
+                handler.PrepareGameBoard();
+            }
+        }
+
+        public void ExecuteMove(BoardCell playerCell, int index)
+        {
+            if (PlayerTurn == playerCell && players[PlayerTurn].PerformMove(index))
+            {
+                UpdatePlayerTurn(playerCell);
                 handler.PrepareGameBoard();
             }
         }
@@ -65,10 +62,30 @@ namespace TicTacToe.Data.Game.Managers
             return newBoard;
         }
 
+        private void UpdatePlayerTurn(BoardCell playerCell)
+        {
+            bool isX = playerCell == BoardCell.X;
+            PlayerTurn = isX ? BoardCell.O : BoardCell.X;
+        }
+
         private void UpdatePlayerTurn()
         {
-            bool isX = PlayerTurn == BoardCell.X;
-            PlayerTurn = isX ? BoardCell.O : BoardCell.X;
+            UpdatePlayerTurn(PlayerTurn);
+        }
+
+        private void DetermineGameMode()
+        {
+            switch (Context.Mode)
+            {
+                case GameMode.SP_AI:
+                    handler = new AIHandler(players, () => UpdatePlayerTurn());
+                    players[BoardCell.O] = new AIPlayer(BoardCell.O, BoardManager, Context.Difficulty);
+                    break;
+                default:
+                    handler = new DefaultHandler(players);
+                    players[BoardCell.O] = new Player(BoardCell.O, BoardManager);
+                    break;
+            }
         }
     }
 }

@@ -11,8 +11,6 @@ namespace TicTacToe.Data.Game
 
         public AIDifficulty Difficulty { get; private set; }
 
-        public int Dimensions { get; private set; }
-
 
         private GameContext()
         {
@@ -23,8 +21,6 @@ namespace TicTacToe.Data.Game
             private GameMode Mode { get; set; }
 
             private AIDifficulty Difficulty { get; set; }
-
-            public int Dimensions { get; private set; }
 
             public Builder(GameMode mode)
             {
@@ -47,17 +43,6 @@ namespace TicTacToe.Data.Game
                     throw new ArgumentException(Constants.INCORRECT_GAME_MODE_ERROR_STRING);
                 }
                 Difficulty = difficulty;
-                return this;
-            }
-
-
-            public Builder WithDimensions(int dimensions)
-            {
-                if (dimensions < 3)
-                {
-                    throw new ArgumentException();
-                }
-                Dimensions = dimensions;
                 return this;
             }
         }

@@ -6,6 +6,8 @@ namespace TicTacToe.Data.Game.Managers
     {
         void ExecuteMove(int index);
 
+        void ExecuteMove(BoardCell cell, int index);
+
         BoardCell PlayerTurn { get; }
 
         BoardCell Winner { get; }
@@ -15,6 +17,8 @@ namespace TicTacToe.Data.Game.Managers
         bool IsGameFinished { get; }
 
         IBoardManager BoardManager { get; }
+
+        GameContext Context { get; }
 
     }
 }

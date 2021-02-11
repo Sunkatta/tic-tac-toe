@@ -20,8 +20,7 @@ namespace TicTacToe.Components
 
         public abstract void PlayAgain();
 
-        // TODO: Rename and remove virtual
-        public virtual void HandleTileClick(int index)
+        public void HandleGameFinish(int index)
         {
             if (GameManager.IsGameFinished)
             {

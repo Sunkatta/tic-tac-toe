@@ -13,7 +13,7 @@ namespace TicTacToe.Components
         }
 
         // name of the user who will be chatting
-        private BoardCell playerCell;
+        public BoardCell PlayerCell { get; set; }
 
         // on-screen message
         public int index;
@@ -36,9 +36,13 @@ namespace TicTacToe.Components
                     .Build();
 
                 hubConnection.On<BoardCell, int>("Broadcast", BroadcastPlayerMove);
-                hubConnection.On("OnDisconnectedAsync", DisconnectAsync);
-
                 await hubConnection.StartAsync();
+                PlayerCell = await hubConnection.InvokeAsync<BoardCell>("GetPlayerCell");
+
+                if (PlayerCell == BoardCell.EMPTY)
+                {
+                    await DisconnectAsync();
+                }
             }
             catch (Exception e)
             {
@@ -49,27 +53,25 @@ namespace TicTacToe.Components
 
         private void BroadcastPlayerMove(BoardCell cell, int index)
         {
-            //bool isMine = name.Equals(username, StringComparison.OrdinalIgnoreCase);
-
-            GameManager.ExecuteMove(index);
-            base.HandleTileClick(index);
-
+            GameManager.ExecuteMove(cell, index);
+            HandleGameFinish(index);
             StateHasChanged();
         }
 
         private async Task DisconnectAsync()
         {
-            //await SendAsync($"[Notice] {username} left chat room.");
-
             await hubConnection.StopAsync();
             await hubConnection.DisposeAsync();
 
             hubConnection = null;
         }
 
-        public override async void HandleTileClick(int index)
+        public async void HandleTileClick(int index)
         {
-            await hubConnection.SendAsync("Broadcast", playerCell, index);
+            if (hubConnection != null && GameManager.PlayerTurn == PlayerCell)
+            {
+                await hubConnection.SendAsync("Broadcast", PlayerCell, index);
+            }
         }
     }
 }
