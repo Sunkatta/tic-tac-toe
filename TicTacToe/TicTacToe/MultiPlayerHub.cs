@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using TicTacToe.Data.Enums;
+using TicTacToe.Messages;
 
 namespace TicTacToe
 {
@@ -10,9 +11,9 @@ namespace TicTacToe
     {
         public const string HubUrl = "/multi-player";
 
-        public async Task Broadcast(BoardCell cell, int index)
+        public async Task Broadcast(Message message)
         {
-            await Clients.All.SendAsync("Broadcast", cell, index);
+            await Clients.All.SendAsync("Broadcast", message);
         }
 
         public override Task OnConnectedAsync()
@@ -35,6 +36,11 @@ namespace TicTacToe
                 2 => BoardCell.O,
                 _ => BoardCell.EMPTY,
             };
+        }
+
+        public bool CanStartGame()
+        {
+            return UserHandler.ConnectedIds.Count == 2;
         }
 
         private static class UserHandler

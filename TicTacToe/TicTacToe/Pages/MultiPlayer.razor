@@ -12,8 +12,10 @@
 {
     <AlertDialog Title="@EndGameTitle" Content="@EndGameMessage" OnOkClicked="@PlayAgain"></AlertDialog>
 }
-
+@if (CanStartGame)
+{
 <GameBoard GameManager="@GameManager" OnTileClicked="@((i) => HandleTileClick(i))" PlayerCell="@PlayerCell"></GameBoard>
+}
 @code{
     protected override async void OnInitialized()
     {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TicTacToe.Data.Enums;
+using TicTacToe.Messages;
 
 namespace TicTacToe.Components
 {
@@ -12,17 +14,14 @@ namespace TicTacToe.Components
             throw new NotImplementedException();
         }
 
-        // name of the user who will be chatting
         public BoardCell PlayerCell { get; set; }
-
-        // on-screen message
-        public int index;
 
         public string hubUrl;
 
         private HubConnection hubConnection;
 
         public string BaseUri { get; set; }
+        public bool CanStartGame { get; set; }
 
         public async Task ConnectPlayer()
         {
@@ -32,13 +31,19 @@ namespace TicTacToe.Components
                     .WithUrl(hubUrl)
                     .Build();
 
-                hubConnection.On<BoardCell, int>("Broadcast", BroadcastPlayerMove);
+                hubConnection.On<Message>("Broadcast", BroadcastMessage);
                 await hubConnection.StartAsync();
                 PlayerCell = await hubConnection.InvokeAsync<BoardCell>("GetPlayerCell");
+                CanStartGame = await hubConnection.InvokeAsync<bool>("CanStartGame");
 
                 if (PlayerCell == BoardCell.EMPTY)
                 {
                     await DisconnectAsync();
+                }
+
+                if (CanStartGame)
+                {
+                    await hubConnection.SendAsync("Broadcast", new Message(MessageType.START_GAME, true));
                 }
             }
             catch (Exception e)
@@ -48,10 +53,28 @@ namespace TicTacToe.Components
             }
         }
 
-        private void BroadcastPlayerMove(BoardCell cell, int index)
+        //TODO: Needs Refactoring Consider using Visitor Pattern
+        private void BroadcastMessage(Message message)
         {
-            GameManager.ExecuteMove(cell, index);
-            HandleGameFinish(index);
+            JsonElement jsonElement = (JsonElement)message.Content;
+            switch (message.Type)
+            {
+                case MessageType.START_GAME:
+                    CanStartGame = jsonElement.GetBoolean();
+                    break;
+                case MessageType.PLAYER_MOVE:
+                    BoardCell playerCell = (BoardCell)Enum.Parse(typeof(BoardCell), jsonElement.GetProperty("playerCell").ToString());
+                    int index = jsonElement.GetProperty("index").GetInt32();
+                    GameManager.ExecuteMove(playerCell, index);
+                    HandleGameFinish(index);
+                    break;
+                case MessageType.RESTART_GAME:
+                    //TBD
+                    break;
+                default:
+                    break;
+            }
+
             StateHasChanged();
         }
 
@@ -67,7 +90,8 @@ namespace TicTacToe.Components
         {
             if (hubConnection != null)
             {
-                await hubConnection.SendAsync("Broadcast", PlayerCell, index);
+                PlayerMove playerMove = new PlayerMove(PlayerCell, index);
+                await hubConnection.SendAsync("Broadcast", new Message(MessageType.PLAYER_MOVE, playerMove));
             }
         }
     }
