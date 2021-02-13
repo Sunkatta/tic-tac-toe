@@ -1,4 +1,4 @@
-﻿namespace TicTacToe.Messages
+﻿namespace TicTacToe.Data.Messages
 {
     public class Message
     {

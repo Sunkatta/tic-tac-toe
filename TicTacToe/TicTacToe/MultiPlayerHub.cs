@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using TicTacToe.Data.Enums;
-using TicTacToe.Messages;
+using TicTacToe.Data.Messages;
 
 namespace TicTacToe
 {

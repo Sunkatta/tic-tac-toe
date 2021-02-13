@@ -9,6 +9,7 @@ namespace TicTacToe.Data.Game.Managers.Handlers
     {
         public AIHandler(IDictionary<BoardCell, IPlayer> players, Action additionalAction) : base(players, additionalAction)
         {
+            // do nothing
         }
 
         public override void PrepareGameBoard()

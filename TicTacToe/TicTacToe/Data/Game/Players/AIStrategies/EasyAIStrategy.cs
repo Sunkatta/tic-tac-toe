@@ -7,6 +7,7 @@ namespace TicTacToe.Data.Game.Players.AIStrategies
     {
         public EasyAIStrategy(BoardCell aiCell, IBoardManager boardManager) : base(aiCell, boardManager)
         {
+            // do nothing
         }
 
         public override int GenerateMove()

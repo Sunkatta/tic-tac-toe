@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TicTacToe.Data.Enums;
 using TicTacToe.Data.Game;
 using TicTacToe.Data.Game.Managers;
-using TicTacToe.Messages;
+using TicTacToe.Data.Messages;
 
 namespace TicTacToe.Components
 {

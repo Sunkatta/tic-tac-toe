@@ -14,6 +14,7 @@ namespace TicTacToe.Data.Game
 
         private GameContext()
         {
+            // do nothing
         }
 
         public class Builder

@@ -1,6 +1,6 @@
 ﻿using TicTacToe.Data.Enums;
 
-namespace TicTacToe.Messages
+namespace TicTacToe.Data.Messages
 {
     public class PlayerMove
     {
