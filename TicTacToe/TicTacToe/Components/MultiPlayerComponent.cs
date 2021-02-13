@@ -128,6 +128,7 @@ namespace TicTacToe.Components
             if (hubConnection != null)
             {
                 await hubConnection.SendAsync("Broadcast", new Message(MessageType.DISCONNECT_GAME, true));
+                await DisconnectAsync();
             }
         }
     }
