@@ -8,8 +8,15 @@
 
 <h1>Multiplayer</h1>
 
-@if (loaded)
+@if (IsLoaded)
 {
+    @if (IsInterrupted)
+    {
+        <AlertDialog Title="Connection Lost" Content="Connection with your opponent has been lost. Do you want to play again?" OnOkClicked="@PlayAgain"></AlertDialog>
+        return;
+    }
+
+
     @if (PlayerCell == Data.Enums.BoardCell.EMPTY)
     {
         <div class="container flex-column mt-5">
@@ -34,6 +41,7 @@
             </div>
         }
     }
+
 }
 
 @code{

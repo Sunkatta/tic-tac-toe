@@ -9,20 +9,21 @@ using TicTacToe.Messages;
 
 namespace TicTacToe.Components
 {
-    public class MultiPlayerComponent : BasePlayerComponent
+    public class MultiPlayerComponent : BasePlayerComponent, IDisposable
     {
         public override async void PlayAgain()
         {
             contextBuilder = new GameContext.Builder(GameMode.MP);
             GameManager = new GameManager(contextBuilder.Build());
-            loaded = false;
+            IsLoaded = false;
             CanStartGame = false;
+            IsInterrupted = false;
             PlayerCell = BoardCell.EMPTY;
             StateHasChanged();
             await ConnectPlayer();
         }
 
-        public BoardCell PlayerCell { get; set; }
+        public BoardCell PlayerCell { get; private set; }
 
         public string hubUrl;
 
@@ -30,9 +31,11 @@ namespace TicTacToe.Components
 
         public string BaseUri { get; set; }
 
-        public bool CanStartGame { get; set; }
+        public bool CanStartGame { get; private set; }
 
-        public bool loaded;
+        public bool IsLoaded { get; private set; }
+
+        public bool IsInterrupted { get; private set; }
 
         public async Task ConnectPlayer()
         {
@@ -57,7 +60,7 @@ namespace TicTacToe.Components
                     await hubConnection.SendAsync("Broadcast", new Message(MessageType.START_GAME, true));
                 }
 
-                loaded = true;
+                IsLoaded = true;
                 StateHasChanged();
             }
             catch (Exception e)
@@ -68,7 +71,7 @@ namespace TicTacToe.Components
         }
 
         //TODO: Needs Refactoring Consider using Visitor Pattern
-        private void BroadcastMessage(Message message)
+        private async void BroadcastMessage(Message message)
         {
             JsonElement jsonElement = (JsonElement)message.Content;
             switch (message.Type)
@@ -82,8 +85,9 @@ namespace TicTacToe.Components
                     GameManager.ExecuteMove(playerCell, index);
                     HandleGameFinish(index);
                     break;
-                case MessageType.RESTART_GAME:
-                    //TODO: Change to DISCONNECT_GAME
+                case MessageType.DISCONNECT_GAME:
+                    IsInterrupted = jsonElement.GetBoolean();
+                    await DisconnectAsync();
                     break;
                 default:
                     break;
@@ -116,6 +120,14 @@ namespace TicTacToe.Components
             if (GameManager.IsGameFinished)
             {
                 await DisconnectAsync();
+            }
+        }
+
+        public async void Dispose()
+        {
+            if (hubConnection != null)
+            {
+                await hubConnection.SendAsync("Broadcast", new Message(MessageType.DISCONNECT_GAME, true));
             }
         }
     }

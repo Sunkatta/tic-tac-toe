@@ -2,6 +2,6 @@
 {
     public enum MessageType
     {
-        START_GAME, PLAYER_MOVE, RESTART_GAME
+        START_GAME, PLAYER_MOVE, DISCONNECT_GAME
     }
 }
