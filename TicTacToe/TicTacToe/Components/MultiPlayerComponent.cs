@@ -70,7 +70,6 @@ namespace TicTacToe.Components
             }
         }
 
-        //TODO: Needs Refactoring Consider using Visitor Pattern
         private async void BroadcastMessage(Message message)
         {
             JsonElement jsonElement = (JsonElement)message.Content;
